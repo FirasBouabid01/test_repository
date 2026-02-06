@@ -1,0 +1,120 @@
+1. Create github testing project
+2. learn how to use GIT, 1 HOUR TRAINing : 
+    - How to clone
+    - How to create a branch
+    - How to commit
+    - How to push
+    - How to create a pull request
+    - How to resolve a conflict
+
+1. Create project :
+    1. Frontend project : 
+        - VueJs 3
+        - Typescript
+        - Eslint
+        - Tailwind CSS
+        - Vuetify
+        - Vue Router
+        - vite
+        - pinia
+    2. Backend project :
+        - .Net 10
+        - entity framework
+        - fluent validator
+        - swagger
+        - Clean architecture :
+            - API project
+                - Controllers : This will contain the API endpoints
+                    - It'll consume the Application project to execute the commands and queries
+                - Middlewares : Exception handling, Logging, Authentication, Authorization
+            - Application project
+                - Commands: This will contain the Writing operations (Create, Update, Delete)
+                - Queries : This will contain the Reading operations (GetAll, GetById)
+            - Domain project:
+                - Entities : This will contain the business entities (User, Product, Order, etc.)
+                - Enums : This will contain the enums (UserRole, OrderStatus, etc.)
+            - Infrastructure project :
+                - Make sure to paginate DATA
+                - Repositories -> access to DBCONTEXT
+                    - Example: 
+                        - UserRepository : IGenericRepository<User>
+                    - IGenericRepository<T> : 
+                        - GetAll() XXX
+                        - GetById()
+                        - Add()
+                        - Update()
+                        - Delete()
+
+
+2. 
+1. Create the initial user management
+    1. Create User entity in the Domain project
+    2. Create User Migration
+    2. Create UserRepository in the Infrastructure project
+    3. Create User commands and queries 
+    4. Create User management Controller
+
+2. Create basic authentication system 
+    1. A user can register to the application
+    2. A user can login to the application
+    3. A user can reset his password
+
+3. Implement RBAC (Role Based Acces Control)
+    1. Create Roles 
+    2. Create Permissions - Static permissions injected into the database using a migration 
+        - The permissions will be in this format : EntityName.Operation, 
+                - Example : User.Create, User.Update, User.Delete ...
+    3. A user can have many Roles, A user Can have many permissions | A role can have many permissions
+    4. Create Apis/Services to manage roles and permissions
+    5. Add a middleware to manage user authorization/authontication, 
+        - i a user doesn't have a specific permission return 403, if he's not authenticated return 401
+        - Permissions must be set in the controller methods, using a special attribute 
+
+
+Class diagrams: 
+```mermaid
+classDiagram
+    class User {
+        +Guid Id
+        +string Username
+        +string FirstName
+        +string LastName
+        +string Email
+        +string PasswordHash
+        +Date DateOfBirth
+        +string PhoneNumber
+        +string Address
+        +List<Role> Roles
+        +List<Permission> Permissions
+    }
+
+    class Role {
+        +Guid Id
+        +string Name
+        +List<Permission> Permissions
+    }
+
+    class Permission {
+        +Guid Id
+        +string Name
+    }
+
+    class RolePermission {
+        +Guid RoleId
+        +Guid PermissionId
+    }
+
+    class UserRole {
+        +Guid UserId
+        +Guid RoleId
+    }
+
+    class UserPermission {
+        +Guid UserId
+        +Guid PermissionId
+    }
+
+    User "*" -- "*" Role : has
+    Role "*" -- "*" Permission : has
+    User "*" -- "*" Permission : has
+```
