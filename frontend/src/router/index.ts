@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { getUserRole } from "../utils/auth";
 
 const routes = [
   {
@@ -6,17 +7,36 @@ const routes = [
     name: "Home",
     component: () => import("../views/HomeView.vue"),
   },
+
+  // 👤 LOGIN (واحد للجميع)
   {
     path: "/login",
-    name: "LoginAdmin",
-    component: () => import("../views/LoginAdmin.vue"),
+    name: "Login",
+    component: () => import("../views/LoginView.vue"),
   },
+
+  {
+    path: "/register",
+    name: "Register",
+    component: () => import("../views/RegisterView.vue"),
+  },
+
+  // 👤 USER DASHBOARD
   {
     path: "/dashboard",
-    name: "Dashboard",
+    name: "UserDashboard",
     component: () => import("../views/DashboardView.vue"),
     meta: { requiresAuth: true },
   },
+
+  // 👑 ADMIN DASHBOARD
+  {
+    path: "/admin/dashboard",
+    name: "AdminDashboard",
+    component: () => import("../views/AdminDashboard.vue"),
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+
   {
     path: "/profile",
     name: "Profile",
@@ -30,13 +50,25 @@ export const router = createRouter({
   routes,
 });
 
-// 🔐 ROUTER GUARD (RBAC FRONTEND)
+// 🔐 GLOBAL AUTH + ROLE GUARD
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
+  const role = getUserRole(); // "Admin" | "User" | null
 
+  // 🔒 لازم login
   if (to.meta.requiresAuth && !token) {
-    next("/login");
-  } else {
-    next();
+    return next("/login");
   }
+
+  // 👑 admin → ديما admin dashboard
+  if (role === "Admin" && to.name === "UserDashboard") {
+    return next("/admin/dashboard");
+  }
+
+  // ❌ user ما يدخلش admin dashboard
+  if (to.meta.requiresAdmin && role !== "Admin") {
+    return next("/dashboard");
+  }
+
+  next();
 });
