@@ -1,7 +1,10 @@
+using API.Middleware;
 using Application.Interfaces;
 using Application.Users.Commands.CreateUser;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
+using Infrastructure.Authentication;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,12 +13,16 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ==============================
+// Controllers & Swagger
+// ==============================
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// CORS Configuration
+// ==============================
+// CORS
+// ==============================
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -26,28 +33,53 @@ builder.Services.AddCors(options =>
     });
 });
 
+// ==============================
 // Database
+// ==============================
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    b => b.MigrationsAssembly("Infrastructure")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("Infrastructure")
+    )
+);
 
+// ==============================
 // Repositories
+// ==============================
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+// ==============================
 // MediatR
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly));
+// ==============================
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly)
+);
 
-// Auth
-builder.Services.AddScoped<IJwtTokenGenerator, Infrastructure.Authentication.JwtTokenGenerator>();
+// ==============================
+// JWT Token Generator
+// ==============================
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
+// ==============================
+// RBAC Permission Service
+// ==============================
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+
+// ==============================
+// Authentication (JWT)
+// ==============================
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtSettings:Secret").Value!)),
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(
+                    builder.Configuration["JwtSettings:Secret"]!
+                )
+            ),
             ValidateIssuer = false,
             ValidateAudience = false
         };
@@ -55,16 +87,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// Global Exception Handling Middleware (must be first)
-app.UseMiddleware<API.Middleware.GlobalExceptionMiddleware>();
+// ==============================
+// Global Exception Middleware
+// ==============================
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
-// Configure the HTTP request pipeline.
+// ==============================
+// Swagger (Dev only)
+// ==============================
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// ==============================
+// HTTP Pipeline
+// ==============================
 app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
@@ -72,13 +111,9 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+// 🔐 RBAC Permission Middleware
+app.UseMiddleware<PermissionMiddleware>();
 
-// Ensure Database is created (For development/demo purposes)
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
-}
+app.MapControllers();
 
 app.Run();
