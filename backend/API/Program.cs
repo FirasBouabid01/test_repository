@@ -65,6 +65,10 @@ builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 // RBAC Permission Service
 // ==============================
 builder.Services.AddScoped<IPermissionService, PermissionService>();
+// ==============================
+// Role Service
+// ==============================
+builder.Services.AddScoped<RoleService>();
 
 // ==============================
 // Authentication (JWT)
