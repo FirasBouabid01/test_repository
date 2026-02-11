@@ -53,5 +53,7 @@ public class AppDbContext : DbContext
             .HasOne(up => up.Permission)
             .WithMany(p => p.UserPermissions)
             .HasForeignKey(up => up.PermissionId);
+        DbSeeder.Seed(modelBuilder);
+
     }
 }
