@@ -48,11 +48,23 @@ const routes = [
     component: () => import("../views/PermissionsView.vue"),
     meta: { requiresAuth: true, requiresAdmin: true },
   },
+  {
+    path: "/users",
+    name: "UserManagement",
+    component: () => import("../views/UsersView.vue"),
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
 
   {
     path: "/profile",
     name: "Profile",
     component: () => import("../views/ProfileView.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/my-permissions",
+    name: "MyPermissions",
+    component: () => import("../views/MyPermissionsView.vue"),
     meta: { requiresAuth: true },
   },
 ];
@@ -63,7 +75,7 @@ export const router = createRouter({
 });
 
 // 🔐 GLOBAL AUTH + ROLE GUARD
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   const token = localStorage.getItem("token");
 
   // 🔒 requires login

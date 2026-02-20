@@ -1,8 +1,10 @@
 using Application.Users.Commands.CreateUser;
 using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.ChangePassword;
+using Application.Users.Commands.UpdateUserRolesAndPermissions;
 using Application.Users.Queries.GetUserProfile;
 using Application.Users.Queries.GetUsers;
+using Application.Users.Queries.GetUserRolesAndPermissions;
 using Application.Users.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +24,12 @@ public class UsersController : ControllerBase
         _mediator = mediator;
     }
 
+    private bool IsAdminUser()
+    {
+        var isAdminClaim = User.FindFirst("is_admin")?.Value;
+        return isAdminClaim == "true";
+    }
+
     [HttpGet("profile")]
     [Authorize]
     public async Task<IActionResult> GetProfile()
@@ -37,6 +45,23 @@ public class UsersController : ControllerBase
         var userProfile = await _mediator.Send(query);
 
         return Ok(userProfile);
+    }
+
+    [HttpGet("me/permissions")]
+    [Authorize]
+    public async Task<IActionResult> GetMyPermissions()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            return Unauthorized();
+        }
+
+        var userId = Guid.Parse(userIdClaim.Value);
+        var query = new GetUserRolesAndPermissionsQuery(userId);
+        var result = await _mediator.Send(query);
+
+        return Ok(result);
     }
 
     [HttpPost("change-password")]
@@ -60,11 +85,25 @@ public class UsersController : ControllerBase
     public record ChangePasswordRequest(string CurrentPassword, string NewPassword, string ConfirmNewPassword);
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll()
     {
+        if (!IsAdminUser()) return Forbid();
         var users = await _mediator.Send(new GetUsersQuery());
         return Ok(users);
     }
+
+    [HttpPut("{id}/roles-permissions")]
+    [Authorize]
+    public async Task<IActionResult> UpdateRolesAndPermissions(Guid id, UpdateUserRolesAndPermissionsRequest request)
+    {
+        if (!IsAdminUser()) return Forbid();
+        var command = new UpdateUserRolesAndPermissionsCommand(id, request.Roles, request.Permissions);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+
+    public record UpdateUserRolesAndPermissionsRequest(List<string> Roles, List<string> Permissions);
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginUserCommand command)

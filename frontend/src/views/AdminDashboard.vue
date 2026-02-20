@@ -1,34 +1,34 @@
 <template>
   <v-container>
-    <h1 class="mb-4">Admin Dashboard</h1>
+    <h1 class="mb-4">{{ $t('dashboards.admin.title') }}</h1>
 
     <v-row>
       <v-col cols="12" md="4">
         <v-card class="pa-4" elevation="2">
-          <h3>👥 Users</h3>
-          <p>Manage users and assign roles</p>
+          <h3>👥 {{ $t('dashboards.admin.users.title') }}</h3>
+          <p>{{ $t('dashboards.admin.users.subtitle') }}</p>
           <v-btn color="primary" @click="$router.push('/users')">
-            Go
+            {{ $t('dashboards.admin.go') }}
           </v-btn>
         </v-card>
       </v-col>
 
       <v-col cols="12" md="4">
         <v-card class="pa-4" elevation="2">
-          <h3>🛡️ Roles</h3>
-          <p>Create roles and manage permissions</p>
+          <h3>🛡️ {{ $t('dashboards.admin.roles.title') }}</h3>
+          <p>{{ $t('dashboards.admin.roles.subtitle') }}</p>
           <v-btn color="primary" @click="$router.push('/roles')">
-            Go
+            {{ $t('dashboards.admin.go') }}
           </v-btn>
         </v-card>
       </v-col>
 
       <v-col cols="12" md="4">
         <v-card class="pa-4" elevation="2">
-          <h3>🔑 Permissions</h3>
-          <p>Assign permissions to roles</p>
+          <h3>🔑 {{ $t('dashboards.admin.permissions.title') }}</h3>
+          <p>{{ $t('dashboards.admin.permissions.subtitle') }}</p>
           <v-btn color="primary" @click="$router.push('/permissions')">
-            Go
+            {{ $t('dashboards.admin.go') }}
           </v-btn>
         </v-card>
       </v-col>

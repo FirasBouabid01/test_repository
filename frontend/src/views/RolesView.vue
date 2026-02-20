@@ -2,18 +2,18 @@
   <v-container>
     <v-row class="mb-4" align="center">
       <v-col>
-        <h1 class="text-h4 font-weight-bold">Role Management</h1>
+        <h1 class="text-h4 font-weight-bold">{{ $t('roles.title') }}</h1>
       </v-col>
       <v-col cols="auto">
         <v-btn color="primary" prepend-icon="mdi-plus" @click="openDialog()">
-          Add Role
+          {{ $t('roles.add') }}
         </v-btn>
       </v-col>
     </v-row>
 
     <v-card elevation="2" class="rounded-lg">
       <v-data-table
-        :headers="headers"
+        :headers="translatedHeaders"
         :items="roles"
         :loading="loading"
         class="elevation-0"
@@ -33,32 +33,32 @@
     <v-dialog v-model="dialog" max-width="600px">
       <v-card class="rounded-xl">
         <v-card-title class="bg-primary text-white pa-4">
-          <span class="text-h5">{{ editedItem.id ? 'Edit Role' : 'New Role' }}</span>
+          <span class="text-h5">{{ editedItem.id ? $t('roles.edit') : $t('roles.new') }}</span>
         </v-card-title>
 
         <v-card-text class="pa-6">
           <v-form ref="form" v-model="valid">
             <v-text-field
               v-model="editedItem.name"
-              label="Role Name"
+              :label="$t('roles.name')"
               variant="outlined"
-              :rules="[v => !!v || 'Name is required']"
+              :rules="[v => !!v || $t('roles.nameRequired')]"
               required
               class="mb-4"
             ></v-text-field>
 
-            <div class="text-subtitle-1 mb-2 font-weight-bold">Permissions</div>
+            <div class="text-subtitle-1 mb-2 font-weight-bold">{{ $t('roles.permissions') }}</div>
             <v-autocomplete
               v-model="selectedPermissions"
               :items="allPermissions"
               item-title="name"
               item-value="id"
-              label="Select Permissions"
+              :label="$t('roles.select')"
               multiple
               chips
               closable-chips
               variant="outlined"
-              hint="Search and select permissions for this role"
+              :hint="$t('roles.search')"
               persistent-hint
             ></v-autocomplete>
           </v-form>
@@ -66,9 +66,9 @@
 
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn variant="text" @click="closeDialog">Cancel</v-btn>
+          <v-btn variant="text" @click="closeDialog">{{ $t('common.cancel') }}</v-btn>
           <v-btn color="primary" :loading="saving" :disabled="!valid" @click="saveRole">
-            Save
+            {{ $t('common.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -77,17 +77,17 @@
     <!-- Delete Confirmation -->
     <v-dialog v-model="deleteDialog" max-width="400px">
       <v-card class="rounded-xl">
-        <v-card-title class="text-h5 pa-4">Confirm Delete</v-card-title>
+        <v-card-title class="text-h5 pa-4">{{ $t('common.confirmDelete') }}</v-card-title>
         <v-card-text class="pa-4 pt-0">
-          Are you sure you want to delete the role <b>{{ editedItem.name }}</b>?
+          {{ $t('common.deleteConfirmText', { name: editedItem.name }) }}
           <v-alert v-if="deleteError" type="error" variant="tonal" class="mt-4" closable>
             {{ deleteError }}
           </v-alert>
         </v-card-text>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
-          <v-btn color="error" :loading="deleting" @click="deleteRole">Delete</v-btn>
+          <v-btn variant="text" @click="deleteDialog = false">{{ $t('common.cancel') }}</v-btn>
+          <v-btn color="error" :loading="deleting" @click="deleteRole">{{ $t('common.delete') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -100,7 +100,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Permission {
   id: string
@@ -133,10 +136,10 @@ const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
 
-const headers = [
-  { title: 'Name', key: 'name' },
-  { title: 'Actions', key: 'actions', sortable: false, align: 'end' },
-]
+const translatedHeaders = computed(() => [
+  { title: t('common.name'), key: 'name' },
+  { title: t('common.actions'), key: 'actions', sortable: false, align: 'end' },
+])
 
 const defaultItem: Role = { name: '' }
 const editedItem = ref<Role>({ ...defaultItem })
@@ -147,10 +150,10 @@ const fetchRoles = async () => {
     const response = await fetch('http://localhost:5112/api/roles', {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
-    if (!response.ok) throw new Error('Failed to fetch roles')
+    if (!response.ok) throw new Error(t('roles.fetchError'))
     roles.value = await response.json()
   } catch (err) {
-    showSnackbar('Error loading roles', 'error')
+    showSnackbar(t('roles.fetchError'), 'error')
   } finally {
     loading.value = false
   }
@@ -161,7 +164,7 @@ const fetchAllPermissions = async () => {
     const response = await fetch('http://localhost:5112/api/permissions', {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
-    if (!response.ok) throw new Error('Failed to fetch permissions')
+    if (!response.ok) throw new Error(t('permissions.fetchError'))
     allPermissions.value = await response.json()
   } catch (err) {
     console.error('Error fetching permissions:', err)
@@ -219,7 +222,7 @@ const saveRole = async () => {
 
     if (!response.ok) {
       const data = await response.json().catch(() => ({}))
-      throw new Error(data.message || data.error || 'Failed to save role')
+      throw new Error(data.message || data.error || t('roles.saveError'))
     }
 
     let roleId = editedItem.value.id
@@ -240,11 +243,11 @@ const saveRole = async () => {
       })
 
       if (!permResponse.ok) {
-        showSnackbar('Role saved but permission assignment failed', 'warning')
+        showSnackbar(t('roles.permUpdateError'), 'warning')
       }
     }
 
-    showSnackbar(`Role ${isEdit ? 'updated' : 'created'} successfully`)
+    showSnackbar(isEdit ? t('roles.updated') : t('roles.created'))
     closeDialog()
     fetchRoles()
   } catch (err: any) {
@@ -271,10 +274,10 @@ const deleteRole = async () => {
 
     if (!response.ok) {
       const data = await response.json().catch(() => ({}))
-      throw new Error(data.message || data.error || 'Failed to delete role')
+      throw new Error(data.message || data.error || t('roles.deleteError'))
     }
 
-    showSnackbar('Role deleted successfully')
+    showSnackbar(t('roles.deleted'))
     deleteDialog.value = false
     fetchRoles()
   } catch (err: any) {

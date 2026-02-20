@@ -1,12 +1,12 @@
 using Application.Interfaces;
-using Domain.Entities;
+using Application.Users.Dtos;
 using MediatR;
 
 namespace Application.Users.Queries.GetUsers;
 
-public record GetUsersQuery : IRequest<IEnumerable<User>>;
+public record GetUsersQuery : IRequest<IEnumerable<UserManagementDto>>;
 
-public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<User>>
+public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<UserManagementDto>>
 {
     private readonly IUserRepository _userRepository;
 
@@ -15,8 +15,19 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<U
         _userRepository = userRepository;
     }
 
-    public async Task<IEnumerable<User>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<UserManagementDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        return await _userRepository.GetAllAsync();
+        var users = await _userRepository.GetAllWithRolesAndPermissionsAsync();
+
+        return users.Select(u => new UserManagementDto
+        {
+            Id = u.Id,
+            Username = u.Username,
+            Email = u.Email,
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            Roles = u.UserRoles.Select(ur => ur.Role.Name).ToList(),
+            Permissions = u.UserPermissions.Select(up => up.Permission.Name).ToList()
+        });
     }
 }

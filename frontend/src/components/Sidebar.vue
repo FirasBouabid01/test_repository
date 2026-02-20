@@ -10,14 +10,14 @@
     <v-list density="comfortable" nav>
       <v-list-item
         prepend-icon="mdi-home"
-        title="Home"
+        :title="$t('common.home')"
         to="/"
         value="home"
       ></v-list-item>
       
       <v-list-item
         prepend-icon="mdi-view-dashboard"
-        title="Dashboard"
+        :title="$t('common.dashboard')"
         to="/dashboard"
         value="dashboard"
       ></v-list-item>
@@ -26,7 +26,7 @@
       <v-list-item
         v-if="isAdmin()"
         prepend-icon="mdi-shield-account"
-        title="Roles"
+        :title="$t('common.roles')"
         to="/roles"
         value="roles"
       ></v-list-item>
@@ -34,14 +34,29 @@
       <v-list-item
         v-if="isAdmin()"
         prepend-icon="mdi-key"
-        title="Permissions"
+        :title="$t('common.permissions')"
         to="/permissions"
         value="permissions"
       ></v-list-item>
 
       <v-list-item
+        v-if="isAdmin()"
+        prepend-icon="mdi-account-group"
+        :title="$t('users.title')"
+        to="/users"
+        value="users"
+      ></v-list-item>
+
+      <v-list-item
+        prepend-icon="mdi-shield-check"
+        :title="$t('myPermissions.title')"
+        to="/my-permissions"
+        value="my-permissions"
+      ></v-list-item>
+
+      <v-list-item
         prepend-icon="mdi-account"
-        title="Profile"
+        :title="$t('common.profile')"
         to="/profile"
         value="profile"
       ></v-list-item>
@@ -50,7 +65,7 @@
     <template v-slot:append>
       <div class="pa-2">
         <v-btn block color="error" prepend-icon="mdi-logout" @click="handleLogout">
-          Logout
+          {{ $t('common.logout') }}
         </v-btn>
       </div>
     </template>

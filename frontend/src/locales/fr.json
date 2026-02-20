@@ -1,0 +1,159 @@
+{
+    "common": {
+        "login": "Connexion",
+        "register": "S'inscrire",
+        "logout": "Déconnexion",
+        "profile": "Profil",
+        "home": "Accueil",
+        "dashboard": "Tableau de bord",
+        "roles": "Rôles",
+        "permissions": "Permissions",
+        "actions": "Actions",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "confirmDelete": "Confirmer la suppression",
+        "deleteConfirmText": "Êtes-vous sûr de vouloir supprimer {name} ?",
+        "name": "Nom",
+        "welcome": "Bienvenue",
+        "error": "Une erreur est survenue"
+    },
+    "login": {
+        "title": "Bon retour",
+        "subtitle": "Connectez-vous à votre compte",
+        "email": "E-mail",
+        "password": "Mot de passe",
+        "noAccount": "Vous n'avez pas de compte ?",
+        "error": "E-mail ou mot de passe invalide"
+    },
+    "home": {
+        "title": "Bienvenue sur notre plateforme",
+        "subtitle": "Découvrez la prochaine génération d'applications web. Sûre, rapide et fiable.",
+        "getStarted": "Commencer"
+    },
+    "roles": {
+        "title": "Gestion des rôles",
+        "add": "Ajouter un rôle",
+        "edit": "Modifier le rôle",
+        "new": "Nouveau rôle",
+        "name": "Nom du rôle",
+        "nameRequired": "Le nom est requis",
+        "fetchError": "Erreur lors du chargement des rôles",
+        "saveError": "Échec de l'enregistrement du rôle",
+        "deleteError": "Échec de la suppression du rôle",
+        "permUpdateError": "Rôle enregistré mais l'attribution des permissions a échoué",
+        "permissions": "Permissions",
+        "select": "Sélectionner des permissions",
+        "search": "Rechercher et sélectionner des permissions pour ce rôle",
+        "created": "Rôle créé avec succès",
+        "updated": "Rôle mis à jour avec succès",
+        "deleted": "Rôle supprimé avec succès"
+    },
+    "permissions": {
+        "title": "Gestion des permissions",
+        "add": "Ajouter une permission",
+        "edit": "Modifier la permission",
+        "new": "Nouvelle permission",
+        "name": "Nom de la permission",
+        "hint": "ex: User.Create, Role.Delete",
+        "fetchError": "Erreur lors du chargement des permissions",
+        "saveError": "Échec de l'enregistrement de la permission",
+        "created": "Permission créée avec succès",
+        "updated": "Permission mise à jour avec succès",
+        "deleted": "Permission supprimée avec succès"
+    },
+    "myPermissions": {
+        "title": "Mes Rôles & Permissions",
+        "roles": "Mes Rôles",
+        "permissions": "Mes Permissions",
+        "noRoles": "Aucun rôle assigné",
+        "noPermissions": "Aucune permission assignée",
+        "subtitle": "Consultez votre niveau d'accès actuel et les actions autorisées"
+    },
+    "dashboards": {
+        "user": {
+            "title": "Tableau de bord",
+            "welcome": "Bon retour !",
+            "profile": {
+                "title": "Mon Profil",
+                "subtitle": "Voir les détails personnels"
+            },
+            "status": {
+                "title": "Statut",
+                "subtitle": "Authentifié et sécurisé"
+            }
+        },
+        "admin": {
+            "title": "Tableau de bord Admin",
+            "users": {
+                "title": "Utilisateurs",
+                "subtitle": "Gérer les utilisateurs et attribuer des rôles"
+            },
+            "roles": {
+                "title": "Rôles",
+                "subtitle": "Créer des rôles et gérer les permissions"
+            },
+            "permissions": {
+                "title": "Permissions",
+                "subtitle": "Attribuer des permissions aux rôles"
+            },
+            "go": "Aller"
+        }
+    },
+    "profile": {
+        "title": "Mon Profil",
+        "contactInfo": "Informations de contact",
+        "email": "Email",
+        "phone": "Téléphone",
+        "address": "Adresse",
+        "dob": "Date de naissance",
+        "changePassword": {
+            "button": "Changer le mot de passe",
+            "dialogTitle": "Changer le mot de passe",
+            "current": "Mot de passe actuel",
+            "new": "Nouveau mot de passe",
+            "confirm": "Confirmer le nouveau mot de passe",
+            "update": "Mettre à jour le mot de passe",
+            "success": "Mot de passe changé avec succès !",
+            "fetchError": "Échec de la récupération du profil"
+        }
+    },
+    "register": {
+        "title": "Créer un compte",
+        "username": "Nom d'utilisateur",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "submit": "Démarrer",
+        "alreadyHaveAccount": "Vous avez déjà un compte ?",
+        "signIn": "Se connecter",
+        "success": "Inscription réussie ! Redirection vers la page de connexion...",
+        "ageError": "Vous devez avoir au moins 13 ans"
+    },
+    "validation": {
+        "required": "Ce champ est obligatoire",
+        "email": "Adresse email invalide",
+        "phone": "Numéro de téléphone invalide",
+        "minLength": "Le mot de passe doit comporter au moins 6 caractères",
+        "passwordMatch": "Les mots de passe ne correspondent pas"
+    },
+    "users": {
+        "title": "Gestion des utilisateurs",
+        "table": {
+            "username": "Nom d'utilisateur",
+            "email": "Email",
+            "fullName": "Nom complet",
+            "roles": "Rôles",
+            "permissions": "Permissions directes",
+            "actions": "Actions"
+        },
+        "edit": {
+            "title": "Modifier l'accès de l'utilisateur",
+            "roles": "Rôles assignés",
+            "permissions": "Permissions directes",
+            "save": "Mettre à jour l'accès",
+            "success": "Accès utilisateur mis à jour avec succès"
+        }
+    }
+}

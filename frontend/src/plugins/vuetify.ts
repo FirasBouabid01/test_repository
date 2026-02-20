@@ -6,4 +6,9 @@ import * as directives from 'vuetify/directives'
 export default createVuetify({
     components,
     directives,
+    locale: {
+        rtl: {
+            ar: true,
+        },
+    },
 })

@@ -30,6 +30,11 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             new Claim("is_admin", user.IsAdmin.ToString().ToLower()),
         };
 
+        if (user.IsAdmin)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+        }
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),

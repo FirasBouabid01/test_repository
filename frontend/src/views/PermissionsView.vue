@@ -2,18 +2,18 @@
   <v-container>
     <v-row class="mb-4" align="center">
       <v-col>
-        <h1 class="text-h4 font-weight-bold">Permission Management</h1>
+        <h1 class="text-h4 font-weight-bold">{{ $t('permissions.title') }}</h1>
       </v-col>
       <v-col cols="auto">
         <v-btn color="primary" prepend-icon="mdi-plus" @click="openDialog()">
-          Add Permission
+          {{ $t('permissions.add') }}
         </v-btn>
       </v-col>
     </v-row>
 
     <v-card elevation="2" class="rounded-lg">
       <v-data-table
-        :headers="headers"
+        :headers="translatedHeaders"
         :items="permissions"
         :loading="loading"
         class="elevation-0"
@@ -33,18 +33,18 @@
     <v-dialog v-model="dialog" max-width="500px">
       <v-card class="rounded-xl">
         <v-card-title class="bg-primary text-white pa-4">
-          <span class="text-h5">{{ editedItem.id ? 'Edit Permission' : 'New Permission' }}</span>
+          <span class="text-h5">{{ editedItem.id ? $t('permissions.edit') : $t('permissions.new') }}</span>
         </v-card-title>
 
         <v-card-text class="pa-6">
           <v-form ref="form" v-model="valid">
             <v-text-field
               v-model="editedItem.name"
-              label="Permission Name"
+              :label="$t('permissions.name')"
               variant="outlined"
-              hint="e.g., User.Create, Role.Delete"
+              :hint="$t('permissions.hint')"
               persistent-hint
-              :rules="[v => !!v || 'Name is required']"
+              :rules="[v => !!v || $t('roles.nameRequired')]"
               required
             ></v-text-field>
           </v-form>
@@ -52,9 +52,9 @@
 
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn variant="text" @click="closeDialog">Cancel</v-btn>
+          <v-btn variant="text" @click="closeDialog">{{ $t('common.cancel') }}</v-btn>
           <v-btn color="primary" :loading="saving" :disabled="!valid" @click="savePermission">
-            Save
+            {{ $t('common.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -63,17 +63,17 @@
     <!-- Delete Confirmation -->
     <v-dialog v-model="deleteDialog" max-width="400px">
       <v-card class="rounded-xl">
-        <v-card-title class="text-h5 pa-4">Confirm Delete</v-card-title>
+        <v-card-title class="text-h5 pa-4">{{ $t('common.confirmDelete') }}</v-card-title>
         <v-card-text class="pa-4 pt-0">
-          Are you sure you want to delete the permission <b>{{ editedItem.name }}</b>?
+          {{ $t('common.deleteConfirmText', { name: editedItem.name }) }}
           <v-alert v-if="deleteError" type="error" variant="tonal" class="mt-4" closable>
             {{ deleteError }}
           </v-alert>
         </v-card-text>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
-          <v-btn color="error" :loading="deleting" @click="deletePermission">Delete</v-btn>
+          <v-btn variant="text" @click="deleteDialog = false">{{ $t('common.cancel') }}</v-btn>
+          <v-btn color="error" :loading="deleting" @click="deletePermission">{{ $t('common.delete') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -86,7 +86,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Permission {
   id?: string
@@ -105,10 +108,10 @@ const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
 
-const headers = [
-  { title: 'Name', key: 'name' },
-  { title: 'Actions', key: 'actions', sortable: false, align: 'end' },
-]
+const translatedHeaders = computed(() => [
+  { title: t('common.name'), key: 'name' },
+  { title: t('common.actions'), key: 'actions', sortable: false, align: 'end' },
+])
 
 const defaultItem: Permission = { name: '' }
 const editedItem = ref<Permission>({ ...defaultItem })
@@ -119,10 +122,10 @@ const fetchPermissions = async () => {
     const response = await fetch('http://localhost:5112/api/permissions', {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
-    if (!response.ok) throw new Error('Failed to fetch permissions')
+    if (!response.ok) throw new Error(t('permissions.fetchError'))
     permissions.value = await response.json()
   } catch (err) {
-    showSnackbar('Error loading permissions', 'error')
+    showSnackbar(t('permissions.fetchError'), 'error')
   } finally {
     loading.value = false
   }
@@ -157,10 +160,10 @@ const savePermission = async () => {
 
     if (!response.ok) {
       const data = await response.json().catch(() => ({}))
-      throw new Error(data.message || data.error || 'Failed to save permission')
+      throw new Error(data.message || data.error || t('permissions.saveError'))
     }
 
-    showSnackbar(`Permission ${isEdit ? 'updated' : 'created'} successfully`)
+    showSnackbar(isEdit ? t('permissions.updated') : t('permissions.created'))
     closeDialog()
     fetchPermissions()
   } catch (err: any) {
@@ -190,7 +193,7 @@ const deletePermission = async () => {
       throw new Error(data.message || data.error || 'Failed to delete permission')
     }
 
-    showSnackbar('Permission deleted successfully')
+    showSnackbar(t('permissions.deleted'))
     deleteDialog.value = false
     fetchPermissions()
   } catch (err: any) {

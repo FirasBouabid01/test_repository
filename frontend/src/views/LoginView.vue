@@ -6,14 +6,14 @@
           <v-card-title
             class="text-h4 font-weight-bold text-center pa-6 bg-primary"
           >
-            <span class="text-white">Welcome Back</span>
+            <span class="text-white">{{ $t('login.title') }}</span>
           </v-card-title>
 
           <v-card-text class="pa-8">
             <v-form ref="form" v-model="valid" @submit.prevent="handleLogin">
               <v-text-field
                 v-model="email"
-                label="Email"
+                :label="$t('login.email')"
                 prepend-inner-icon="mdi-email"
                 :rules="[rules.required, rules.email]"
                 variant="outlined"
@@ -22,7 +22,7 @@
 
               <v-text-field
                 v-model="password"
-                label="Password"
+                :label="$t('login.password')"
                 prepend-inner-icon="mdi-lock"
                 :type="showPassword ? 'text' : 'password'"
                 :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -52,20 +52,20 @@
                 :disabled="!valid"
                 class="mb-4"
               >
-                Sign In
+                {{ $t('common.login') }}
               </v-btn>
 
               <v-divider class="my-4" />
 
               <div class="text-center">
-                <span class="text-body-2">Don't have an account?</span>
+                <span class="text-body-2">{{ $t('login.noAccount') }}</span>
                 <v-btn
                   variant="text"
                   color="primary"
                   to="/register"
                   class="ml-2"
                 >
-                  Register Now
+                  {{ $t('common.register') }}
                 </v-btn>
               </div>
             </v-form>

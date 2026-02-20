@@ -1,0 +1,159 @@
+{
+    "common": {
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout",
+        "profile": "Profile",
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "roles": "Roles",
+        "permissions": "Permissions",
+        "actions": "Actions",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "confirmDelete": "Confirm Delete",
+        "deleteConfirmText": "Are you sure you want to delete {name}?",
+        "name": "Name",
+        "welcome": "Welcome",
+        "error": "An error occurred"
+    },
+    "login": {
+        "title": "Welcome Back",
+        "subtitle": "Login to your account",
+        "email": "Email",
+        "password": "Password",
+        "noAccount": "Don't have an account?",
+        "error": "Invalid email or password"
+    },
+    "home": {
+        "title": "Welcome to Our Platform",
+        "subtitle": "Experience the next generation of web applications. Secure, fast, and reliable.",
+        "getStarted": "Get Started"
+    },
+    "roles": {
+        "title": "Role Management",
+        "add": "Add Role",
+        "edit": "Edit Role",
+        "new": "New Role",
+        "name": "Role Name",
+        "nameRequired": "Name is required",
+        "fetchError": "Error loading roles",
+        "saveError": "Failed to save role",
+        "deleteError": "Failed to delete role",
+        "permUpdateError": "Role saved but permission assignment failed",
+        "permissions": "Permissions",
+        "select": "Select Permissions",
+        "search": "Search and select permissions for this role",
+        "created": "Role created successfully",
+        "updated": "Role updated successfully",
+        "deleted": "Role deleted successfully"
+    },
+    "permissions": {
+        "title": "Permission Management",
+        "add": "Add Permission",
+        "edit": "Edit Permission",
+        "new": "New Permission",
+        "name": "Permission Name",
+        "hint": "e.g., User.Create, Role.Delete",
+        "fetchError": "Error loading permissions",
+        "saveError": "Failed to save permission",
+        "created": "Permission created successfully",
+        "updated": "Permission updated successfully",
+        "deleted": "Permission deleted successfully"
+    },
+    "myPermissions": {
+        "title": "My Roles & Permissions",
+        "roles": "My Roles",
+        "permissions": "My Permissions",
+        "noRoles": "No roles assigned",
+        "noPermissions": "No permissions assigned",
+        "subtitle": "View your current access level and authorized actions"
+    },
+    "dashboards": {
+        "user": {
+            "title": "Dashboard",
+            "welcome": "Welcome back!",
+            "profile": {
+                "title": "My Profile",
+                "subtitle": "View personal details"
+            },
+            "status": {
+                "title": "Status",
+                "subtitle": "Authenticated & Secure"
+            }
+        },
+        "admin": {
+            "title": "Admin Dashboard",
+            "users": {
+                "title": "Users",
+                "subtitle": "Manage users and assign roles"
+            },
+            "roles": {
+                "title": "Roles",
+                "subtitle": "Create roles and manage permissions"
+            },
+            "permissions": {
+                "title": "Permissions",
+                "subtitle": "Assign permissions to roles"
+            },
+            "go": "Go"
+        }
+    },
+    "profile": {
+        "title": "My Profile",
+        "contactInfo": "Contact Information",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address",
+        "dob": "Date of Birth",
+        "changePassword": {
+            "button": "Change Password",
+            "dialogTitle": "Change Password",
+            "current": "Current Password",
+            "new": "New Password",
+            "confirm": "Confirm New Password",
+            "update": "Update Password",
+            "success": "Password changed successfully!",
+            "fetchError": "Failed to fetch profile"
+        }
+    },
+    "register": {
+        "title": "Create Account",
+        "username": "Username",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "submit": "Register",
+        "alreadyHaveAccount": "Already have an account?",
+        "signIn": "Sign In",
+        "success": "Registration successful! Redirecting to login...",
+        "ageError": "You must be at least 13 years old"
+    },
+    "validation": {
+        "required": "This field is required",
+        "email": "Invalid email address",
+        "phone": "Invalid phone number",
+        "minLength": "Password must be at least 6 characters",
+        "passwordMatch": "Passwords do not match"
+    },
+    "users": {
+        "title": "User Management",
+        "table": {
+            "username": "Username",
+            "email": "Email",
+            "fullName": "Full Name",
+            "roles": "Roles",
+            "permissions": "Direct Permissions",
+            "actions": "Actions"
+        },
+        "edit": {
+            "title": "Edit User Access",
+            "roles": "Assigned Roles",
+            "permissions": "Direct Permissions",
+            "save": "Update Access",
+            "success": "User access updated successfully"
+        }
+    }
+}

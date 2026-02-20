@@ -4,12 +4,12 @@
       <v-col cols="12" md="10" lg="8">
         <v-card class="elevation-2 rounded-lg pa-6">
           <v-card-title class="text-h4 mb-4">
-            Dashboard
+            {{ $t('dashboards.user.title') }}
           </v-card-title>
           
           <v-card-text>
             <p class="text-h6 mb-4">
-              Welcome back!
+              {{ $t('dashboards.user.welcome') }}
             </p>
             
             <v-row>
@@ -18,8 +18,8 @@
                   <div class="d-flex align-center">
                     <v-icon size="48" color="primary" class="mr-4">mdi-account-circle</v-icon>
                     <div>
-                      <div class="text-h6">My Profile</div>
-                      <div class="text-body-2 text-grey-darken-1">View personal details</div>
+                      <div class="text-h6">{{ $t('dashboards.user.profile.title') }}</div>
+                      <div class="text-body-2 text-grey-darken-1">{{ $t('dashboards.user.profile.subtitle') }}</div>
                     </div>
                   </div>
                 </v-card>
@@ -30,8 +30,8 @@
                   <div class="d-flex align-center">
                     <v-icon size="48" color="success" class="mr-4">mdi-shield-check</v-icon>
                     <div>
-                      <div class="text-h6">Status</div>
-                      <div class="text-body-2 text-grey-darken-1">Authenticated & Secure</div>
+                      <div class="text-h6">{{ $t('dashboards.user.status.title') }}</div>
+                      <div class="text-body-2 text-grey-darken-1">{{ $t('dashboards.user.status.subtitle') }}</div>
                     </div>
                   </div>
                 </v-card>

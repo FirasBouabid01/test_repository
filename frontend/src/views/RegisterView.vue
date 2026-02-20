@@ -163,7 +163,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const router = useRouter()
 const form = ref()
 const valid = ref(false)
@@ -186,24 +188,24 @@ const formData = ref({
 })
 
 const rules = {
-  required: (value: string) => !!value || 'This field is required',
+  required: (value: string) => !!value || t('validation.required'),
   email: (value: string) => {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return pattern.test(value) || 'Invalid email address'
+    return pattern.test(value) || t('validation.email')
   },
   phone: (value: string) => {
     const pattern = /^[\d\s\-+()]+$/
-    return (value.length >= 10 && pattern.test(value)) || 'Invalid phone number'
+    return (value.length >= 10 && pattern.test(value)) || t('validation.phone')
   },
   dateOfBirth: (value: string) => {
-    if (!value) return 'Date of birth is required'
+    if (!value) return t('validation.required')
     const date = new Date(value)
     const today = new Date()
     const age = today.getFullYear() - date.getFullYear()
-    return age >= 13 || 'You must be at least 13 years old'
+    return age >= 13 || t('register.ageError')
   },
-  minLength: (value: string) => value.length >= 6 || 'Password must be at least 6 characters',
-  passwordMatch: (value: string) => value === formData.value.password || 'Passwords do not match'
+  minLength: (value: string) => value.length >= 6 || t('validation.minLength'),
+  passwordMatch: (value: string) => value === formData.value.password || t('validation.passwordMatch')
 }
 
 const handleRegister = async () => {
@@ -237,16 +239,16 @@ const handleRegister = async () => {
 
     if (!response.ok) {
       const errorData = await response.json()
-      throw new Error(errorData.error || 'Registration failed')
+      throw new Error(errorData.error || t('common.error'))
     }
 
-    success.value = 'Registration successful! Redirecting to login...'
+    success.value = t('register.success')
     
     setTimeout(() => {
       router.push('/')
     }, 2000)
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'An error occurred during registration'
+    error.value = err instanceof Error ? err.message : t('common.error')
   } finally {
     loading.value = false
   }
