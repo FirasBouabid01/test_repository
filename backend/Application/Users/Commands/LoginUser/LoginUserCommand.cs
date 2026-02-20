@@ -21,21 +21,13 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string>
 
     public async Task<string> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        // ✅ لازم user مع roles
-        var user = await _userRepository.GetByEmailWithRolesAsync(request.Email);
+        var user = await _userRepository.GetByEmailAsync(request.Email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
             throw new ValidationException("Invalid email or password.");
         }
 
-        // ✅ استخراج role
-        var roleName = user.UserRoles
-            .Select(ur => ur.Role.Name)
-            .FirstOrDefault() ?? "User";
-
-        // ✅ توليد JWT فيه role
-       return _jwtTokenGenerator.GenerateToken(user);
-
+        return _jwtTokenGenerator.GenerateToken(user);
     }
 }

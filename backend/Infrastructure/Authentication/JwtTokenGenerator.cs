@@ -22,27 +22,13 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:Secret"]!);
 
-        // 🔐 Claims الأساسية
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.Email, user.Email),
+            new Claim("is_admin", user.IsAdmin.ToString().ToLower()),
         };
-
-        // 👑 إضافة الـ Roles من قاعدة البيانات
-        if (user.UserRoles != null && user.UserRoles.Any())
-        {
-            foreach (var userRole in user.UserRoles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
-            }
-        }
-        else
-        {
-            // Role افتراضي
-            claims.Add(new Claim(ClaimTypes.Role, "User"));
-        }
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
