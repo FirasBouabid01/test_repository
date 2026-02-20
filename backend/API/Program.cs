@@ -47,6 +47,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Repositories
 // ==============================
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 // ==============================
