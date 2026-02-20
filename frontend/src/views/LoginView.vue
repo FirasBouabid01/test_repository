@@ -80,7 +80,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { auth } from "../store/auth";
-import { getUserRole } from "../utils/auth";
+import { isAdmin } from "../utils/auth";
 
 const router = useRouter();
 
@@ -133,12 +133,8 @@ const handleLogin = async () => {
     // ✅ save token
     auth.login(data.token);
 
-    // ✅ get role from JWT
-    const role = getUserRole(); // "Admin" | "User" | null
-    console.log("ROLE =", role);
-
-    // 🔀 redirect حسب الدور
-    if (role === "Admin") {
+    // 🔀 redirect based on is_admin
+    if (isAdmin()) {
       router.push("/admin/dashboard");
     } else {
       router.push("/dashboard");

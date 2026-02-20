@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { getUserRole } from "../utils/auth";
+import { isAdmin } from "../utils/auth";
 
 const routes = [
   {
@@ -36,6 +36,18 @@ const routes = [
     component: () => import("../views/AdminDashboard.vue"),
     meta: { requiresAuth: true, requiresAdmin: true },
   },
+  {
+    path: "/roles",
+    name: "RoleManagement",
+    component: () => import("../views/RolesView.vue"),
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
+    path: "/permissions",
+    name: "PermissionManagement",
+    component: () => import("../views/PermissionsView.vue"),
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
 
   {
     path: "/profile",
@@ -53,20 +65,19 @@ export const router = createRouter({
 // 🔐 GLOBAL AUTH + ROLE GUARD
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
-  const role = getUserRole(); // "Admin" | "User" | null
 
-  // 🔒 لازم login
+  // 🔒 requires login
   if (to.meta.requiresAuth && !token) {
     return next("/login");
   }
 
-  // 👑 admin → ديما admin dashboard
-  if (role === "Admin" && to.name === "UserDashboard") {
+  // 👑 admin always goes to admin dashboard
+  if (isAdmin() && to.name === "UserDashboard") {
     return next("/admin/dashboard");
   }
 
-  // ❌ user ما يدخلش admin dashboard
-  if (to.meta.requiresAdmin && role !== "Admin") {
+  // ❌ non-admins cannot access admin dashboard
+  if (to.meta.requiresAdmin && !isAdmin()) {
     return next("/dashboard");
   }
 
