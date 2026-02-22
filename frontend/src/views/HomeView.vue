@@ -4,7 +4,7 @@
       <v-col cols="12" md="8" lg="6">
         <v-icon size="100" color="white" class="mb-6">mdi-rocket-launch</v-icon>
         <h1 class="text-h2 font-weight-bold text-white mb-4">
-          Welcome to Our Platform
+          {{ $t('auth.welcomeBack') }}
         </h1>
         <p class="text-h5 text-white mb-8 opacity-90">
           Experience the next generation of web applications. Secure, fast, and reliable.

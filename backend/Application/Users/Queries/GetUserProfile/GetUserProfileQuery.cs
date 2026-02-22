@@ -34,7 +34,8 @@ public class GetUserProfileQueryHandler : IRequestHandler<GetUserProfileQuery, U
             LastName = user.LastName,
             DateOfBirth = user.DateOfBirth,
             PhoneNumber = user.PhoneNumber,
-            Address = user.Address
+            Address = user.Address,
+            IsAdmin = user.IsAdmin
         };
     }
 }

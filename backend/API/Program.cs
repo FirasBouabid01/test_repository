@@ -10,6 +10,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Security.Claims;
+using Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +29,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins("http://localhost:3000", "http://localhost:3001")
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
@@ -47,6 +50,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Repositories
 // ==============================
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 // ==============================
@@ -69,7 +74,9 @@ builder.Services.AddScoped<IPermissionService, PermissionService>();
 // Role Service
 // ==============================
 builder.Services.AddScoped<RoleService>();
-
+builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
+builder.Services.AddScoped<IUserPermissionService, UserPermissionService>();
+builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 // ==============================
 // Authentication (JWT)
 // ==============================

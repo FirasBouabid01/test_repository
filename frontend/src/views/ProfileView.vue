@@ -124,13 +124,15 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import api from '../utils/axios'   // 🔥 مهم
 
 const router = useRouter()
+
 const user = ref<any>(null)
 const loading = ref(false)
 const error = ref('')
 
-// Password Change State
+// Password State
 const showPasswordDialog = ref(false)
 const passwordForm = ref()
 const passwordValid = ref(false)
@@ -148,32 +150,19 @@ const rules = {
 }
 
 const fetchProfile = async () => {
-  const token = localStorage.getItem('token')
-  if (!token) {
-    router.push('/')
-    return
-  }
-
   loading.value = true
+  error.value = ''
+
   try {
-    const response = await fetch('http://localhost:5112/api/users/profile', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        localStorage.removeItem('token')
-        router.push('/')
-        return
-      }
-      throw new Error('Failed to fetch profile')
+    const response = await api.get('/users/profile') // 🔥 بدون ما نكتب token
+    user.value = response.data
+  } catch (err: any) {
+    if (err.response?.status === 401) {
+      localStorage.removeItem('token')
+      router.push('/login')
+    } else {
+      error.value = 'Failed to load profile'
     }
-
-    user.value = await response.json()
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : 'An error occurred'
   } finally {
     loading.value = false
   }
@@ -182,39 +171,28 @@ const fetchProfile = async () => {
 const handleChangePassword = async () => {
   passwordError.value = ''
   passwordSuccess.value = ''
-  
+
   const { valid } = await passwordForm.value.validate()
   if (!valid) return
 
   passwordLoading.value = true
-  const token = localStorage.getItem('token')
 
   try {
-    const response = await fetch('http://localhost:5112/api/users/change-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        currentPassword: currentPassword.value,
-        newPassword: newPassword.value,
-        confirmNewPassword: confirmNewPassword.value
-      })
+    await api.post('/users/change-password', {
+      currentPassword: currentPassword.value,
+      newPassword: newPassword.value,
+      confirmNewPassword: confirmNewPassword.value
     })
 
-    if (!response.ok) {
-      const data = await response.json()
-      throw new Error(data.error || 'Failed to change password')
-    }
-
     passwordSuccess.value = 'Password changed successfully!'
+
     setTimeout(() => {
       closePasswordDialog()
     }, 1500)
-    
-  } catch (err) {
-    passwordError.value = err instanceof Error ? err.message : 'An error occurred'
+
+  } catch (err: any) {
+    passwordError.value =
+      err.response?.data?.message || 'Failed to change password'
   } finally {
     passwordLoading.value = false
   }
@@ -232,11 +210,7 @@ const closePasswordDialog = () => {
 
 const formatDate = (dateString: string) => {
   if (!dateString) return ''
-  return new Date(dateString).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
+  return new Date(dateString).toLocaleDateString()
 }
 
 onMounted(() => {

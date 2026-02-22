@@ -26,11 +26,11 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.Username ?? ""),
+            new Claim(ClaimTypes.Email, user.Email ?? ""),
         };
 
-        // 👑 إضافة الـ Roles من قاعدة البيانات
+        // Roles
         if (user.UserRoles != null && user.UserRoles.Any())
         {
             foreach (var userRole in user.UserRoles)
@@ -40,14 +40,13 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         }
         else
         {
-            // Role افتراضي
             claims.Add(new Claim(ClaimTypes.Role, "User"));
         }
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddDays(7),
+            Expires = DateTime.UtcNow.AddHours(2),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature

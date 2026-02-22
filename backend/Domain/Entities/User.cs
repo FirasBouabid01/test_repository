@@ -11,6 +11,7 @@ public class User
     public DateTime DateOfBirth { get; set; }
     public string PhoneNumber { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
+    public bool IsAdmin { get; set; } = false;
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     public ICollection<UserPermission> UserPermissions { get; set; } = new List<UserPermission>();
 }
