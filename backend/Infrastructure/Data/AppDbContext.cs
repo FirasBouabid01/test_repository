@@ -13,6 +13,9 @@ public class AppDbContext : DbContext
     public DbSet<UserRole> UserRoles => Set<UserRole>();
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
     public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
+    public DbSet<TrainingLevel> TrainingLevels => Set<TrainingLevel>();
+    public DbSet<LeaderProgress> LeaderProgresses => Set<LeaderProgress>();
+    public DbSet<LevelHistory> LevelHistories => Set<LevelHistory>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,7 +56,59 @@ public class AppDbContext : DbContext
             .HasOne(up => up.Permission)
             .WithMany(p => p.UserPermissions)
             .HasForeignKey(up => up.PermissionId);
-        DbSeeder.Seed(modelBuilder);
 
+        // TrainingLevel Configuration
+        modelBuilder.Entity<TrainingLevel>(entity =>
+        {
+            entity.HasIndex(e => e.Name).IsUnique();
+            entity.HasIndex(e => e.SequenceOrder);
+
+            entity.HasOne(d => d.PrerequisiteLevel)
+                .WithMany(p => p.DependentLevels)
+                .HasForeignKey(d => d.PrerequisiteLevelId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // LeaderProgress Configuration
+        modelBuilder.Entity<LeaderProgress>(entity =>
+        {
+            entity.HasIndex(e => e.UserId).IsUnique();
+
+            entity.HasOne(d => d.User)
+                .WithOne(p => p.LeaderProgress)
+                .HasForeignKey<LeaderProgress>(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(d => d.CurrentLevel)
+                .WithMany(p => p.LeaderProgresses)
+                .HasForeignKey(d => d.CurrentLevelId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // LevelHistory Configuration
+        modelBuilder.Entity<LevelHistory>(entity =>
+        {
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.LevelHistories)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(d => d.FromLevel)
+                .WithMany(p => p.SourceHistoryRecords)
+                .HasForeignKey(d => d.FromLevelId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(d => d.ToLevel)
+                .WithMany(p => p.DestinationHistoryRecords)
+                .HasForeignKey(d => d.ToLevelId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(d => d.AdminUser)
+                .WithMany(p => p.AdministeredChanges)
+                .HasForeignKey(d => d.ChangedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        DbSeeder.Seed(modelBuilder);
     }
 }

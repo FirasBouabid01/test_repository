@@ -24,12 +24,6 @@ public class UsersController : ControllerBase
         _mediator = mediator;
     }
 
-    private bool IsAdminUser()
-    {
-        var isAdminClaim = User.FindFirst("is_admin")?.Value;
-        return isAdminClaim == "true";
-    }
-
     [HttpGet("profile")]
     [Authorize]
     public async Task<IActionResult> GetProfile()
@@ -85,19 +79,17 @@ public class UsersController : ControllerBase
     public record ChangePasswordRequest(string CurrentPassword, string NewPassword, string ConfirmNewPassword);
 
     [HttpGet]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAll()
     {
-        if (!IsAdminUser()) return Forbid();
         var users = await _mediator.Send(new GetUsersQuery());
         return Ok(users);
     }
 
     [HttpPut("{id}/roles-permissions")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateRolesAndPermissions(Guid id, UpdateUserRolesAndPermissionsRequest request)
     {
-        if (!IsAdminUser()) return Forbid();
         var command = new UpdateUserRolesAndPermissionsCommand(id, request.Roles, request.Permissions);
         await _mediator.Send(command);
         return NoContent();

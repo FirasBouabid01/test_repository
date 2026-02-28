@@ -155,21 +155,11 @@ const fetchData = async () => {
       fetch('http://localhost:5112/api/permissions', { headers: { 'Authorization': `Bearer ${token}` } })
     ])
 
-    if (usersRes.ok) {
-      users.value = await usersRes.json()
-    } else {
-      snackbarText.value = `Error ${usersRes.status}: ${t('common.error')}`
-      snackbarColor.value = 'error'
-      snackbar.value = true
-    }
-    
+    if (usersRes.ok) users.value = await usersRes.json()
     if (rolesRes.ok) availableRoles.value = await rolesRes.json()
     if (permsRes.ok) availablePermissions.value = await permsRes.json()
   } catch (error) {
     console.error('Failed to fetch user data:', error)
-    snackbarText.value = t('common.error')
-    snackbarColor.value = 'error'
-    snackbar.value = true
   } finally {
     loading.value = false
   }

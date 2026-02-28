@@ -14,4 +14,19 @@ public class User
     public bool IsAdmin { get; set; }
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     public ICollection<UserPermission> UserPermissions { get; set; } = new List<UserPermission>();
+
+    /// <summary>
+    /// Gets or sets the training progress record for this user.
+    /// </summary>
+    public virtual LeaderProgress? LeaderProgress { get; set; }
+
+    /// <summary>
+    /// Gets or sets the history of level changes for this user.
+    /// </summary>
+    public virtual ICollection<LevelHistory> LevelHistories { get; set; } = new List<LevelHistory>();
+
+    /// <summary>
+    /// Gets or sets the history of level changes performed by this user (as admin).
+    /// </summary>
+    public virtual ICollection<LevelHistory> AdministeredChanges { get; set; } = new List<LevelHistory>();
 }
